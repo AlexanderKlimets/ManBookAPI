@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31515.178
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManBookAPI", "ManBookAPI\ManBookAPI.csproj", "{47D384C4-A899-428F-8C9F-7BD0A9FBC205}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataBaseRepository", "DataBaseRepository\DataBaseRepository.csproj", "{D3BF5B3C-4A3F-4FAF-B7F2-0D62D6371C49}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{47D384C4-A899-428F-8C9F-7BD0A9FBC205}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47D384C4-A899-428F-8C9F-7BD0A9FBC205}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47D384C4-A899-428F-8C9F-7BD0A9FBC205}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47D384C4-A899-428F-8C9F-7BD0A9FBC205}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3BF5B3C-4A3F-4FAF-B7F2-0D62D6371C49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3BF5B3C-4A3F-4FAF-B7F2-0D62D6371C49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3BF5B3C-4A3F-4FAF-B7F2-0D62D6371C49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3BF5B3C-4A3F-4FAF-B7F2-0D62D6371C49}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5976B58B-928F-4DE1-99C5-64A848BA6207}
+	EndGlobalSection
+EndGlobal
