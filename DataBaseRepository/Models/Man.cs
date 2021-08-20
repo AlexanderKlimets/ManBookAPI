@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-//using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
-//using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace DataBaseRepository.Models
@@ -33,5 +32,15 @@ namespace DataBaseRepository.Models
         /// Дата рождения человека.
         /// </summary>
         public DateTimeOffset BirthDate { get; set; }
+
+        /// <summary>
+        /// Список книг человека.
+        /// </summary>
+        public List<Book> ManBooks { get; set; }
+
+        public Man()
+        {
+            ManBooks = new List<Book>();
+        }
     }
 }

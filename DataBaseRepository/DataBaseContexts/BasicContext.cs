@@ -12,8 +12,9 @@ namespace DataBaseRepository
     /// <summary>
     /// Абстрактный класс, предоставляющий наборы для работы с сущностями базы данных и функции перевода моделей базы данных в DTO-объекты.
     /// </summary>
-    public abstract class BasicContext : DbContext
+    public class BasicContext : DbContext
     {
+        //public DbSet<Library> Library { get; set; }
         /// <summary>
         /// Набор для работы с сущностью "Человек".
         /// </summary>
@@ -22,100 +23,112 @@ namespace DataBaseRepository
         /// Набор для работы с сущностью "Книга".
         /// </summary>
         public DbSet<Book> Books { get; set; }
+        
         /// <summary>
-        /// Набор для работы с сущностью "Человек взял книгу".
+        /// Набор для работы с сущьностью "Авторы".
         /// </summary>
-        public DbSet<ManTakeBook> MenTakeBooks { get; set; }
-
+        public DbSet<Author> Authors { get; set; }
 
         /// <summary>
-        /// Позволяет преобразовать список сущностей "Человек" в набор DTO-объектов "Человек".
+        /// Набор для работы с сущностью "Жанры".
         /// </summary>
-        /// <param name="manList">Список сущностей "Человек".</param>
-        /// <returns>Набор DTO-объектов "Человек".</returns>
-        protected IEnumerable<ManDto> ConvertManListToManDtoList(List<Man> manList)
+        public DbSet<Genre> Genres { get; set; }
+
+        public BasicContext(DbContextOptions<BasicContext> options)
+            : base(options)
         {
-            var menDtoList = from man in manList
-                             select new ManDto()
-                             {
-                                 Name = man.Name,
-                                 Surname = man.Surname,
-                                 Patronymic = man.Patronymic,
-                                 BirthDate = man.BirthDate
-                             };
-            return menDtoList;
+            Database.EnsureCreated();
         }
 
-        /// <summary>
-        /// Позволяет преобразовать DTO-объект "Человек" в сущность "Человек".
-        /// </summary>
-        /// <param name="man">DTO-объект "Человек".</param>
-        /// <returns>сущность "Человек".</returns>
-        protected Man ConvertManDtoToMan(ManDto man)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            return new Man()
+            modelBuilder.Entity<Man>()
+            .ToTable("Men").HasKey(m => m.Id);           
+            modelBuilder.Entity<Book>()
+                .ToTable("Books").HasKey(b => b.Id);            
+            modelBuilder.Entity<Author>()
+                    .ToTable("Authors").HasKey(a => a.Id);
+            modelBuilder.Entity<Genre>()
+                    .ToTable("Genres").HasKey(m => m.Id);
+
+            modelBuilder.Entity<Man>().HasData(new Man[]
             {
-                Name = man.Name,
-                Surname = man.Surname,
-                Patronymic = man.Patronymic,
-                BirthDate = man.BirthDate
-            };
-        }
+                new Man 
+                {                    
+                    Id = 1,                         
+                    Name = "Tom",                         
+                    Surname = "Mavrin",                         
+                    Patronymic = "Ivanovich",                        
+                    BirthDate = DateTimeOffset.Now,                            
+                    ManBooks = new List<Book>()
+                },
+                new Man
+                {
+                    Id = 2,
+                    Name = "Jerry",
+                    Surname = "Boil",
+                    Patronymic = "Semenovich",
+                    BirthDate = DateTimeOffset.Now,
+                    ManBooks = new List<Book>()
+                },
+                new Man
+                {
+                    Id = 3,
+                    Name = "Affen",
+                    Surname = "Sunset",
+                    Patronymic = "Sergeyevich",
+                    BirthDate = DateTimeOffset.Now,
+                    ManBooks = new List<Book>()
+                }
+            });
 
-        /// <summary>
-        /// Позволяет преобразовать список сущностей "Книга" в набор DTO-объектов "Книга".
-        /// </summary>
-        /// <param name="bookList">Список сущностей "Книга".</param>
-        /// <returns>Набор DTO-объектов "Книга".</returns>
-        protected IEnumerable<BookDto> ConvertBookListToBookDtoList(List<Book> bookList)
-        {
-            var bookDtoList = from book in bookList
-                              select new BookDto()
-                              {
-                                  Title = book.Title,
-                                  AuthorName = book.AuthorName,
-                                  Genre = book.Genre
-
-                              };
-            return bookDtoList;
-        }
-
-        /// <summary>
-        /// Позволяет преобразовать DTO-объект "Книга" в сущность "Книга".
-        /// </summary>
-        /// <param name="book">DTO-объект "Книга".</param>
-        /// <returns>Сущность "Книга".</returns>
-        protected Book ConvertBookDtoToBook(BookDto book)
-        {
-            return new Book()
+            modelBuilder.Entity<Genre>().HasData(new Genre[]
             {
-                Title = book.Title,
-                AuthorName = book.AuthorName,
-                Genre = book.Genre
-            };
-        }
+                new Genre
+                {
+                    Id = 1,
+                    GenreName = "novel",
+                    GenreBooks = new List<Book>()
+                },
+                new Genre
+                {
+                    Id = 2,
+                    GenreName = "historical",
+                    GenreBooks = new List<Book>()
+                },
+                new Genre
+                {
+                    Id = 3,
+                    GenreName = "fantasy",
+                    GenreBooks = new List<Book>()
+                }
+            }
+            );
 
-        /// <summary>
-        /// Добавляет DTO-объект "Человек" в набор сущностей "Люди".
-        /// </summary>
-        /// <param name="man">DTO-объект "Человек".</param>
-        public void AddMan(ManDto man)
-        {
-            var manToAdd = ConvertManDtoToMan(man);
-            Men.Add(manToAdd);
-            SaveChanges();
-            
-        }
-
-        /// <summary>
-        /// Добавляет DTO-объект "Книга" в набор сущностей "Книги".
-        /// </summary>
-        /// <param name="man">DTO-объект "Книга".</param>
-        public void AddBook(BookDto book)
-        {
-            var bookToAdd = ConvertBookDtoToBook(book);
-            Books.Add(bookToAdd);
-            SaveChanges();
+            modelBuilder.Entity<Author>().HasData(new Author[]
+            {
+                new Author
+                {
+                    Id = 1,
+                    FirstName = "Alexey",
+                    LastName = "Pehov",
+                    MiddleName = "Ivanovich"
+                },
+                new Author
+                {
+                    Id = 2, 
+                    FirstName = "Roman", 
+                    LastName = "Prokofev", 
+                    MiddleName = "Olegovich"
+                },
+                new Author
+                {
+                    Id = 3,
+                    FirstName = "Oleg",
+                    LastName = "Terentev",
+                    MiddleName = "Igorevich"
+                }
+            });          
         }
     }
 }
