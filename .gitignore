@@ -57,9 +57,3 @@ Generated\ Files/
 *.pidb
 *.svclog
 *.scc
-
-# Visual Studio profiler
-*.psess
-*.vsp
-*.vspx
-*.sap

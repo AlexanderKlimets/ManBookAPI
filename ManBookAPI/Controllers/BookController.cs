@@ -1,12 +1,10 @@
-﻿using DataBaseRepository;
-using DataBaseRepository.DataBaseContexts;
+﻿using AutoMapper;
 using DataBaseRepository.DTO_s;
+using DataBaseRepository.Models;
+using ManBookAPI.Services;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -16,62 +14,74 @@ namespace ManBookAPI.Controllers
     [ApiController]
     public class BookController : ControllerBase
     {
+
+        public BookController(IBookService bookContext, 
+                              IAuthorService authorContext, 
+                              IGenreService genreContext, 
+                              IManService manContext,
+                              IMapper mapper)
+        {
+            _bookContext = bookContext;
+            _authorContext = authorContext;
+            _genreContext = genreContext;
+            _manContext = manContext;
+            _mapper = mapper;
+        }
+
+        private readonly IBookService _bookContext;
+        private readonly IAuthorService _authorContext;
+        private readonly IGenreService _genreContext;
+        private readonly IManService _manContext;
+        private readonly IMapper _mapper;
+
         // GET: api/<Book>
         [HttpGet]
         public IEnumerable<BookDto> Get()
         {
-            using (var bookContext = new BookContext())
-            {
-                
-                return bookContext.GetAllBooks();
-            }
-        }
-
-        // GET api/<Book>/5
-        [HttpGet("{authorName}")]
-        public ActionResult<string> Get(string authorName)
-        {
-            if(ModelState.IsValid)
-            {
-                using (var bookContext = new BookContext())
-                {
-                    var result = bookContext.GetBooksByAuthorName(authorName);
-                    return JsonSerializer.Serialize(result, new JsonSerializerOptions { WriteIndented = true, IncludeFields = true });
-                }
-            }
-            return BadRequest();
-                         
+            var result = _mapper.Map<IEnumerable<Book>, IEnumerable<BookDto>>(_bookContext.GetAllBooks());
+            return result;
         }
 
         // POST api/<Book>
         [HttpPost]
         public ActionResult<string> Post([FromBody] BookDto newBook)
         {
-            if(ModelState.IsValid)
-            {
-                using (var bookContext = new BookContext())
-                {
-                    var result = bookContext.AddBookAndReturnList(newBook);
-                    return JsonSerializer.Serialize(result, new JsonSerializerOptions { WriteIndented = true, IncludeFields = true });
-                }
-            }
-            return BadRequest();
-            
-        }
-       
-        // DELETE api/<Book>/5
-        [HttpDelete("{authorName}&{title}")]
-        public ActionResult Delete(string authorName, string title)
-        {
             if (ModelState.IsValid)
             {
-                using (var bookContext = new BookContext())
+                var bookToAdd = _mapper.Map<BookDto, Book>(newBook);
+                if(!_authorContext.Contains(bookToAdd.Author))
                 {
-                    bookContext.DeleteBook(authorName, title);
-                    return Ok();
+                    _authorContext.AddAuthor(bookToAdd.Author);
                 }
+                foreach(Genre genre in bookToAdd.Genres)
+                {
+                    if (!_genreContext.Contains(genre))
+                    {
+                        _genreContext.AddGenre(genre);
+                    }
+                }
+                
+                _bookContext.AddBook(bookToAdd);
+                _bookContext.Save();
+                var result = _mapper.Map<Book, BookDto>(_bookContext.GetBook(bookToAdd));              
+                return JsonSerializer.Serialize(result, new JsonSerializerOptions { WriteIndented = true, IncludeFields = true });                
             }
             return BadRequest();
+
         }
+
+        // DELETE api/<Book>/5
+        [HttpDelete("{authorName}&{title}")]
+        public ActionResult Delete(Author authorName, string title)
+        {
+            
+            if (ModelState.IsValid)
+            {
+                _bookContext.DeleteBooks(authorName, title);
+                _bookContext.Save();               
+                return Ok();
+            }
+            return BadRequest();
+        }     
     }
 }

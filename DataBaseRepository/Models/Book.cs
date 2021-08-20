@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 //using System.Text.Json.Serialization;
@@ -23,10 +24,20 @@ namespace DataBaseRepository.Models
         /// <summary>
         /// Имя автора книги.
         /// </summary>
-        public string AuthorName { get; set; }
+        public Author Author { get; set; }
         /// <summary>
         /// Жанр книги.
         /// </summary>
-        public string Genre { get; set; }
+        //[ForeignKey("Genre_test")]
+        public List<Genre> Genres { get; set; }
+
+        public List<Man> BookMen { get; set; }
+
+        public Book()
+        {
+            Author = new Author();
+            Genres = new List<Genre>();
+            BookMen = new List<Man>();
+        }
     }
 }

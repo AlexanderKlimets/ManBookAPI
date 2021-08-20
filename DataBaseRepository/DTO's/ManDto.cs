@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DataBaseRepository.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -37,5 +38,9 @@ namespace DataBaseRepository.DTO_s
         [Required]
         [DisplayFormat(DataFormatString = "{yyyy-MM-ddTHH:mm:ss.fffzzz}", ApplyFormatInEditMode = true)]
         public DateTimeOffset BirthDate { get; set; }
+        /// <summary>
+        /// Список книг человека.
+        /// </summary>
+        public List<Book> ManBooks { get; set; }
     }
 }
