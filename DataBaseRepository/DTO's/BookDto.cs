@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DataBaseRepository.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -24,11 +25,11 @@ namespace DataBaseRepository.DTO_s
         /// </summary>
         [Required]
         [JsonInclude]
-        public string AuthorName { get; set; }
+        public AuthorDto Author { get; set; }
         /// <summary>
         /// Жанр книги.
         /// </summary>
         [Required]
-        public string Genre { get; set; }
+        public List<GenreDto> Genres { get; set; }
     }
 }

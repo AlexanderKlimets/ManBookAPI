@@ -1,14 +1,10 @@
-﻿using DataBaseRepository;
-using DataBaseRepository.DTO_s;
-using DataBaseRepository.DataBaseContexts;
+﻿using DataBaseRepository.DTO_s;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using System.Text.Json;
+using ManBookAPI.Services;
+using AutoMapper;
+using DataBaseRepository.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -18,47 +14,95 @@ namespace ManBookAPI.Controllers
     [ApiController]
     public class ManController : ControllerBase
     {
+        public ManController (IManService manRepository, IBookService bookRepository, IMapper mapper)
+        {
+            _manContext = manRepository;
+            _bookContext = bookRepository;
+            _mapper = mapper;
+        }
+
+        private readonly IManService _manContext;
+        private readonly IBookService _bookContext;
+        private readonly IMapper _mapper;
 
         // GET: api/<ManController>
         [HttpGet]
         public IEnumerable<ManDto> Get()
-        {           
-            using (var menContext = new MenContext())
-            {               
-                return menContext.GetAllMen();
-            }
+        {
+            var men = _manContext.GetAllMen();
+            var result = _mapper.Map<IEnumerable<Man>, IEnumerable<ManDto>>(men);
+            return result;
         }
 
         // GET api/<ManController>/5
         [HttpGet("{name}")]
-        public ActionResult<string> Get(string name)
+        public ActionResult<string> Get(string name, string surname, string patronymic)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                using (var menContext = new MenContext())
-                {
-                    var result = menContext.GetMenByName(name);
-                    return JsonSerializer.Serialize(result, new JsonSerializerOptions { WriteIndented = true, IncludeFields = true });
-                }
+                var men = _manContext.GetMenBy(m => m.Name == name && m.Surname == surname && m.Patronymic == patronymic);
+                var result = _mapper.Map<IEnumerable<Man>, IEnumerable<ManDto>>(men);
+                return JsonSerializer.Serialize(result, new JsonSerializerOptions { WriteIndented = true, IncludeFields = true });               
             }
             return BadRequest();
+        }
+
+        [HttpGet("/books/{id}")]
+        public IEnumerable<BookDto> GetBooks(int id)
+        {
+            var books = _manContext.GetManBooks(id);
+            var result = _mapper.Map<IEnumerable<Book>, IEnumerable<BookDto>>(books);
+            return result;
         }
 
         // POST api/<ManController>
         [HttpPost]
         public ActionResult<string> Post([FromBody] ManDto newMan)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                using (var menContext = new MenContext())
-                {
-                    var result = menContext.AddManAndReturnList(newMan);
-                    return JsonSerializer.Serialize(result, new JsonSerializerOptions { WriteIndented = true, IncludeFields = true });
-                }
+                var manToAdd = _mapper.Map<ManDto, Man>(newMan);
+                _manContext.AddMan(manToAdd);
+                _manContext.Save();
+                //Проверить, точно ли возвращается нужный человек
+                var result = _mapper.Map<Man, ManDto>(_manContext.GetManBy(m => m.Id == manToAdd.Id));
+                return JsonSerializer.Serialize(result, new JsonSerializerOptions { WriteIndented = true, IncludeFields = true });
+                
             }
             return BadRequest();
-            
-        }        
+
+        }
+
+        // POST api/<ManController>
+        [HttpPost]
+        [Route("/addBook")]
+        public ActionResult<string> Post(int id, [FromBody] BookDto newBook)
+        {
+            if (ModelState.IsValid)
+            {
+                if(!_manContext.ContainsBy(x => x.Id == id))
+                {
+                    return BadRequest($"No man with ID = {id}");
+                }
+                var man = _manContext.GetManBy(m => m.Id == id);
+                var bookToAdd = _mapper.Map<BookDto, Book>(newBook);
+                if (!_bookContext.Contains(bookToAdd))
+                {
+                    _bookContext.AddBook(bookToAdd);
+                    _bookContext.Save();
+                }
+                bookToAdd = _bookContext.GetBookBy(b => b.Author.Equals(newBook.Author) && b.Title == newBook.Title);
+                _manContext.AddManBook(man, bookToAdd);
+                //_manContext.AddMan(manToAdd);
+                _manContext.Save();
+                //Проверить, точно ли возвращается нужный человек
+                var result = _mapper.Map<Man, ManDto>(_manContext.GetManBy(m => m.Id == id));
+                return JsonSerializer.Serialize(result, new JsonSerializerOptions { WriteIndented = true, IncludeFields = true });
+
+            }
+            return BadRequest();
+
+        }
 
         // DELETE api/<ManController>/5
         [HttpDelete("{name}&{surname}&{patronymic}")]
@@ -66,13 +110,49 @@ namespace ManBookAPI.Controllers
         {
             if (ModelState.IsValid)
             {
-                using (var menContext = new MenContext())
+                if (_manContext.ContainsBy(m => m.Name == name && m.Surname == surname && m.Patronymic == patronymic))
                 {
-                    menContext.DeleteMan(name, surname, patronymic);
+                    _manContext.DeleteMenBy(m => m.Name == name && m.Surname == surname && m.Patronymic == patronymic);
+                    _manContext.Save();
                     return Ok();
                 }
+                return BadRequest("The man with such a combination {name}, {surname} and {patronymic} doesn't exist");
             }
-            return BadRequest();
+            return BadRequest("The model state is invalid");
+        }
+
+        // DELETE api/<ManController>/5
+        [HttpDelete("{id}")]
+        public ActionResult Delete(int id)
+        {
+            if (_manContext.ContainsBy(m => m.Id == id))
+            {
+                _manContext.DeleteMenBy(m => m.Id == id);
+                _manContext.Save();
+                return Ok();                
+            }
+            return BadRequest("This ID doesn't exist");
+        }
+
+        [HttpDelete("deleteManBook")]
+        public ActionResult Delete(int id, BookDto book)
+        {
+            var bookToDelete = _mapper.Map<BookDto, Book>(book);
+            if(!_bookContext.ContainsBy(b =>
+                b.Author.Equals(book.Author) && b.Title == book.Title))
+            {
+                //_bookContext.AddBook(boo)
+                return BadRequest("This book doesn't exist");
+
+            }
+            if (_manContext.ContainsBy(m => m.Id == id))
+            {
+                _manContext.DeleteManBook(_manContext.GetManBy(m => m.Id == id), bookToDelete);
+                _manContext.DeleteMenBy(m => m.Id == id);
+                _manContext.Save();
+                return Ok();
+            }
+            return BadRequest("This ID doesn't exist");
         }
     }
 }
