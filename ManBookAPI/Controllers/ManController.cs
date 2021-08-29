@@ -64,13 +64,10 @@ namespace ManBookAPI.Controllers
                 var manToAdd = _mapper.Map<ManDto, Man>(newMan);
                 _manContext.AddMan(manToAdd);
                 _manContext.Save();
-                //Проверить, точно ли возвращается нужный человек
                 var result = _mapper.Map<Man, ManDto>(_manContext.GetManBy(m => m.Id == manToAdd.Id));
-                return JsonSerializer.Serialize(result, new JsonSerializerOptions { WriteIndented = true, IncludeFields = true });
-                
+                return JsonSerializer.Serialize(result, new JsonSerializerOptions { WriteIndented = true, IncludeFields = true });               
             }
             return BadRequest();
-
         }
 
         // POST api/<ManController>
@@ -93,9 +90,7 @@ namespace ManBookAPI.Controllers
                 }
                 bookToAdd = _bookContext.GetBookBy(b => b.Author.Equals(newBook.Author) && b.Title == newBook.Title);
                 _manContext.AddManBook(man, bookToAdd);
-                //_manContext.AddMan(manToAdd);
                 _manContext.Save();
-                //Проверить, точно ли возвращается нужный человек
                 var result = _mapper.Map<Man, ManDto>(_manContext.GetManBy(m => m.Id == id));
                 return JsonSerializer.Serialize(result, new JsonSerializerOptions { WriteIndented = true, IncludeFields = true });
 
