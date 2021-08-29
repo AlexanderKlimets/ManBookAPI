@@ -3,9 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31515.178
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManBookAPI", "ManBookAPI\ManBookAPI.csproj", "{47D384C4-A899-428F-8C9F-7BD0A9FBC205}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ManBookAPI", "ManBookAPI\ManBookAPI.csproj", "{47D384C4-A899-428F-8C9F-7BD0A9FBC205}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataBaseRepository", "DataBaseRepository\DataBaseRepository.csproj", "{D3BF5B3C-4A3F-4FAF-B7F2-0D62D6371C49}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataBaseRepository", "DataBaseRepository\DataBaseRepository.csproj", "{D3BF5B3C-4A3F-4FAF-B7F2-0D62D6371C49}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Entities Core", "Entities Core", "{7730272A-B4F2-4CB8-854F-53856B779F7B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infastructure", "Infastructure\Infastructure.csproj", "{F3F72596-D2E1-4E4C-872F-A494168FED45}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models", "Models\Models.csproj", "{EB397744-8D41-4125-AE0A-73DA1D020DE2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,9 +27,21 @@ Global
 		{D3BF5B3C-4A3F-4FAF-B7F2-0D62D6371C49}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3BF5B3C-4A3F-4FAF-B7F2-0D62D6371C49}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3BF5B3C-4A3F-4FAF-B7F2-0D62D6371C49}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3F72596-D2E1-4E4C-872F-A494168FED45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3F72596-D2E1-4E4C-872F-A494168FED45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3F72596-D2E1-4E4C-872F-A494168FED45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3F72596-D2E1-4E4C-872F-A494168FED45}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB397744-8D41-4125-AE0A-73DA1D020DE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB397744-8D41-4125-AE0A-73DA1D020DE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB397744-8D41-4125-AE0A-73DA1D020DE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB397744-8D41-4125-AE0A-73DA1D020DE2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F3F72596-D2E1-4E4C-872F-A494168FED45} = {7730272A-B4F2-4CB8-854F-53856B779F7B}
+		{EB397744-8D41-4125-AE0A-73DA1D020DE2} = {7730272A-B4F2-4CB8-854F-53856B779F7B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5976B58B-928F-4DE1-99C5-64A848BA6207}
