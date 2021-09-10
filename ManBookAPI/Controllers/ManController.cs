@@ -136,7 +136,6 @@ namespace ManBookAPI.Controllers
             if(!_bookContext.ContainsBy(b =>
                 b.Author.Equals(book.Author) && b.Title == book.Title))
             {
-                //_bookContext.AddBook(boo)
                 return BadRequest("This book doesn't exist");
 
             }
