@@ -65,11 +65,9 @@ namespace ManBookAPI.Controllers
                 _manContext.AddMan(manToAdd);
                 _manContext.Save();
                 var result = _mapper.Map<Man, ManDto>(_manContext.GetManBy(m => m.Id == manToAdd.Id));
-                return JsonSerializer.Serialize(result, new JsonSerializerOptions { WriteIndented = true, IncludeFields = true });
-                
+                return JsonSerializer.Serialize(result, new JsonSerializerOptions { WriteIndented = true, IncludeFields = true });               
             }
             return BadRequest();
-
         }
 
         // POST api/<ManController>

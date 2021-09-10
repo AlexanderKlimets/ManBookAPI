@@ -41,7 +41,6 @@ namespace ManBookAPI.Controllers
         [HttpGet("getAuthorBooks")]
         public ActionResult<string> Get(string firstName, string MiddleName, string lastName)
         {
-            //_mapper.Map<AuthorDto, Author>(author);
             if(!_authorContext.ContainsBy(x =>
                 x.FirstName == firstName &&
                 x.MiddleName == MiddleName &&
@@ -62,7 +61,7 @@ namespace ManBookAPI.Controllers
 
         // POST api/<AuthorController>
         [HttpPost]
-        public ActionResult<AuthorDto> Post(AuthorDto newAuthor)//, List<Book> books)
+        public ActionResult<AuthorDto> Post(AuthorDto newAuthor)
         {
             if(_authorContext.ContainsBy(a =>
                a.FirstName == newAuthor.FirstName &&
