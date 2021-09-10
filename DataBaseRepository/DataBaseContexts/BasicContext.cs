@@ -1,18 +1,15 @@
-﻿using DataBaseRepository.DTO_s;
-using DataBaseRepository.Models;
+﻿using DataBaseRepository.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Linq;
-
+using DataBaseRepository.Interfaces;
 
 namespace DataBaseRepository
 {
     /// <summary>
     /// Абстрактный класс, предоставляющий наборы для работы с сущностями базы данных и функции перевода моделей базы данных в DTO-объекты.
     /// </summary>
-    public class BasicContext : DbContext
+    public class BasicContext : DbContext, IBasicContext
     {
         //public DbSet<Library> Library { get; set; }
         /// <summary>
