@@ -15,23 +15,13 @@ namespace ManBookAPI.Controllers
     public class BookController : ControllerBase
     {
 
-        public BookController(IBookService bookContext, 
-                              IAuthorService authorContext, 
-                              IGenreService genreContext, 
-                              IManService manContext,
-                              IMapper mapper)
+        public BookController(IBookService bookContext, IMapper mapper)
         {
             _bookContext = bookContext;
-            _authorContext = authorContext;
-            _genreContext = genreContext;
-            _manContext = manContext;
             _mapper = mapper;
         }
 
-        private readonly IBookService _bookContext;
-        private readonly IAuthorService _authorContext;
-        private readonly IGenreService _genreContext;
-        private readonly IManService _manContext;
+        private readonly IBookService _bookContext;        
         private readonly IMapper _mapper;
 
         // GET: api/<Book>
@@ -48,21 +38,8 @@ namespace ManBookAPI.Controllers
         {
             if (ModelState.IsValid)
             {
-                var bookToAdd = _mapper.Map<BookDto, Book>(newBook);
-                if(!_authorContext.Contains(bookToAdd.Author))
-                {
-                    _authorContext.AddAuthor(bookToAdd.Author);
-                }
-                foreach(Genre genre in bookToAdd.Genres)
-                {
-                    if (!_genreContext.Contains(genre))
-                    {
-                        _genreContext.AddGenre(genre);
-                    }
-                }
-                
+                var bookToAdd = _mapper.Map<BookDto, Book>(newBook);                              
                 _bookContext.AddBook(bookToAdd);
-                _bookContext.Save();
                 var result = _mapper.Map<Book, BookDto>(_bookContext.GetBook(bookToAdd));              
                 return JsonSerializer.Serialize(result, new JsonSerializerOptions { WriteIndented = true, IncludeFields = true });                
             }

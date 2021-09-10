@@ -1,4 +1,5 @@
 ﻿using DataBaseRepository;
+using DataBaseRepository.Interfaces;
 using DataBaseRepository.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -10,12 +11,26 @@ namespace ManBookAPI.Services
 {
     public class AuthorService : IAuthorService
     {
-        private readonly BasicContext _context;
+        //private readonly BasicContext _context;
+        private IBasicContext _context;
 
-        public AuthorService(DbContextOptions<BasicContext> options)
+        //public AuthorService(DbContextOptions<BasicContext> options)
+        //{
+        //    _context = new BasicContext(options);
+        //}
+
+        public AuthorService(IBasicContext testContext)
         {
-            _context = new BasicContext(options);
+            this._context = testContext;
         }
+
+
+        //private readonly IBasicContext _context;
+
+        //public AuthorService(IBasicContext context)
+        //{
+        //    _context = (BasicContext)context;
+        //}
 
 
         public void AddAuthor(Author author) =>
@@ -56,15 +71,5 @@ namespace ManBookAPI.Services
 
         public void Save() =>
             _context.SaveChanges();
-
-
-        public void UpdateAuthor(Author author)
-        {
-            var authorToUpdate = GetAuthorBy(a => a.Id == author.Id);
-            _context.Entry(authorToUpdate).State = EntityState.Modified;
-            authorToUpdate.FirstName = author.FirstName;
-            authorToUpdate.MiddleName = author.MiddleName;
-            authorToUpdate.LastName = author.LastName;
-        }
     }
 }

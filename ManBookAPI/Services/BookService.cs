@@ -12,15 +12,42 @@ namespace ManBookAPI.Services
     public class BookService : IBookService
     {
         private readonly BasicContext _context;
+        private readonly IAuthorService _authorService;
+        private readonly IGenreService _genreService;
 
-        public BookService(DbContextOptions<BasicContext> options)
+        public BookService(DbContextOptions<BasicContext> options, 
+                           IAuthorService authorService,
+                           IGenreService genreService)
         {
             _context = new BasicContext(options);
+            _authorService = authorService;
+            _genreService = genreService;
         }
 
-        public void AddBook(Book book) =>
+        
 
+
+        public void AddBook(Book book)
+        {
+            //IAuthorService authorService;
+            if(!_authorService.Contains(book.Author))
+            //if(!_context.Authors.Contains(book.Author))
+            {
+                //_context.Authors.Add(book.Author);
+                _authorService.AddAuthor(book.Author);
+            }
+            foreach(Genre genre in book.Genres)
+            {
+                //if(!_context.Genres.Contains(genre))
+                if(!_genreService.Contains(genre))
+                {
+                    _genreService.AddGenre(genre);
+                    //_context.Genres.Add(genre);
+                }
+            }
             _context.Books.Add(book);
+            _context.SaveChanges();
+        }
         
 
         public void DeleteBooks(Author authorName, string title) =>

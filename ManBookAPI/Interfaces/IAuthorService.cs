@@ -42,13 +42,7 @@ namespace ManBookAPI.Services
         /// Добавить сущность "Автор".
         /// </summary>
         /// <param name="author">Сущность "Автор".</param>
-        public void AddAuthor(Author author);
-
-        /// <summary>
-        /// Изменить существующую сущность "Автор".
-        /// </summary>
-        /// <param name="author">Новая сущность "Автор.</param>
-        public void UpdateAuthor(Author author);
+        public void AddAuthor(Author author);       
 
         /// <summary>
         /// Удалить сущность "Автор".
